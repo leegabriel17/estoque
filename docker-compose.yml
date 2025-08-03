@@ -1,0 +1,42 @@
+services:
+  mysql_db:
+    image: mysql:8.0
+    container_name: banco_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # Senha para o usuário root do MySQL
+      MYSQL_DATABASE: estoque_db
+      MYSQL_USER: glee
+      MYSQL_PASSWORD: 12345
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - spring_net
+
+  app:
+    build: .
+    container_name: spring_app
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - spring_net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db:3306/estoque_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: glee
+      SPRING_DATASOURCE_PASSWORD: 12345
+
+volumes:
+  mysql_data:
+
+networks:
+  spring_net:
