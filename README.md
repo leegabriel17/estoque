@@ -10,6 +10,9 @@ Este projeto é uma aplicação de controle de estoque desenvolvida em Java util
 - **Gradle**: Ferramenta de automação de build
 - **PostgreSQL 16**: Banco de dados relacional utilizado
 - **Docker e Docker Compose**: Para orquestração dos containers da aplicação e banco de dados
+- **Swagger**: Para documentação da API (se configurado)
+- **JUnit e Mockito**: Para testes unitários e de integração
+- **Git Flow**: Estratégia de branching para controle de versão
 
 ## Versões
 
