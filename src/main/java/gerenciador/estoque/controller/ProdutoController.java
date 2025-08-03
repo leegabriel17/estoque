@@ -4,8 +4,11 @@ import gerenciador.estoque.request.ProdutoRequest;
 import gerenciador.estoque.response.ProdutoResponse;
 import gerenciador.estoque.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,27 +19,31 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @PostMapping("/save")
-    public void salvar(@RequestBody ProdutoRequest produtoRequest) {
-        produtoService.salvar(produtoRequest);
+    public ResponseEntity<ProdutoResponse> salvar(@RequestBody ProdutoRequest produtoRequest, UriComponentsBuilder uriBuilder) {
+        ProdutoResponse produtoSalvo = produtoService.salvar(produtoRequest);
+        URI uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoSalvo.getId()).toUri();
+        return ResponseEntity.created(uri).body(produtoSalvo);
     }
 
     @PutMapping("/{id}")
-    public ProdutoResponse atualizar(@PathVariable Long id, @RequestBody ProdutoRequest produtoRequest) {
-        return produtoService.atualizar(id, produtoRequest);
+    public ResponseEntity<ProdutoResponse> atualizar(@PathVariable Long id, @RequestBody ProdutoRequest produtoRequest) {
+        ProdutoResponse produtoAtualizado = produtoService.atualizar(id, produtoRequest);
+        return ResponseEntity.ok(produtoAtualizado);
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         produtoService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/list")
-    public List<ProdutoResponse> listarTodos() {
-        return produtoService.listarTodos();
+    @GetMapping
+    public ResponseEntity<List<ProdutoResponse>> listarTodos() {
+        return ResponseEntity.ok(produtoService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ProdutoResponse buscarPorId(@PathVariable Long id) {
-        return produtoService.buscarPorId(id);
+    public ResponseEntity<ProdutoResponse> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(produtoService.buscarPorId(id));
     }
 }

@@ -18,8 +18,8 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    public void salvar(ProdutoRequest produtoRequest) {
-        produtoRepository.save(ProdutoConverter.toEntity(produtoRequest));
+    public ProdutoResponse salvar(ProdutoRequest produtoRequest) {
+        return ProdutoConverter.toResponse(produtoRepository.save(ProdutoConverter.toEntity(produtoRequest)));
     }
 
     public ProdutoResponse atualizar(Long id, ProdutoRequest produtoRequest) {

@@ -1,18 +1,19 @@
 package gerenciador.estoque.model;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "produtos")
+@AllArgsConstructor
 public class ProdutoEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private String tipo;
     private int quantidade;

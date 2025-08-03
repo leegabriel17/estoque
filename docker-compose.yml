@@ -27,7 +27,7 @@ services:
       mysql_db:
         condition: service_healthy
     ports:
-      - "8080:8080"
+      - "8081:8081"
     networks:
       - spring_net
     environment:
