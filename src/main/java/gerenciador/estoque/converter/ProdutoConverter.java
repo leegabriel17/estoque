@@ -10,7 +10,7 @@ public class ProdutoConverter {
         if (produto == null) return null;
 
         ProdutoResponse produtoResponse = new ProdutoResponse();
-
+        produtoResponse.setId(produto.getId());
         produtoResponse.setNome(produto.getNome());
         produtoResponse.setTipo(produto.getTipo());
         produtoResponse.setQuantidade(produto.getQuantidade());

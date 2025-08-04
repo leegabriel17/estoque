@@ -5,15 +5,16 @@ import gerenciador.estoque.model.ProdutoEntity;
 import gerenciador.estoque.repository.ProdutoRepository;
 import gerenciador.estoque.request.ProdutoRequest;
 import gerenciador.estoque.response.ProdutoResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class ProdutoService {
-
 
     @Autowired
     private ProdutoRepository produtoRepository;
@@ -29,10 +30,12 @@ public class ProdutoService {
                 throw new RuntimeException("Produto com ID " + id + " não encontrado.");
             }
             ProdutoEntity produtoEntity = produtoOpt.get();
-            produtoEntity.setNome(produtoEntity.getNome());
-            produtoEntity.setTipo(produtoEntity.getTipo());
-            produtoEntity.setPreco(produtoEntity.getPreco());
-            produtoEntity.setQuantidade(produtoEntity.getQuantidade());
+            produtoEntity.setId(id);
+            produtoEntity.setNome(produtoRequest.getNome());
+            produtoEntity.setTipo(produtoRequest.getTipo());
+            produtoEntity.setPreco(produtoRequest.getPreco());
+            produtoEntity.setQuantidade(produtoRequest.getQuantidade());
+            log.info("Produto atualizado com sucesso: {}", produtoEntity);
             return ProdutoConverter.toResponse(produtoRepository.save(produtoEntity));
         } catch (Exception e) {
             throw new RuntimeException("Erro ao atualizar produto: " + e.getMessage(), e);
