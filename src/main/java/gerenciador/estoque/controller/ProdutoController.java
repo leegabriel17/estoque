@@ -7,7 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,10 +19,10 @@ import java.util.List;
 @Tag(name = "Produtos", description = "Endpoints para Gerenciamento de Produtos")
 @RestController
 @RequestMapping("/produtos")
+@RequiredArgsConstructor
 public class ProdutoController {
 
-    @Autowired
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
 
     @Operation(summary = "Cria um novo produto", description = "Registra um novo produto no estoque e retorna os dados do produto criado.")
     @ApiResponses(value = {
@@ -30,7 +31,7 @@ public class ProdutoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping
-    public ResponseEntity<ProdutoResponse> salvar(@RequestBody ProdutoRequest produtoRequest, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<ProdutoResponse> salvar(@RequestBody @Valid ProdutoRequest produtoRequest, UriComponentsBuilder uriBuilder) {
         ProdutoResponse produtoSalvo = produtoService.salvar(produtoRequest);
         URI uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoSalvo.getId()).toUri();
         return ResponseEntity.created(uri).body(produtoSalvo);
@@ -43,7 +44,7 @@ public class ProdutoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponse> atualizar(@PathVariable Long id, @RequestBody ProdutoRequest produtoRequest) {
+    public ResponseEntity<ProdutoResponse> atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoRequest produtoRequest) {
         ProdutoResponse produtoAtualizado = produtoService.atualizar(id, produtoRequest);
         return ResponseEntity.ok(produtoAtualizado);
     }
