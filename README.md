@@ -1,4 +1,4 @@
-# gerenciar_estoque
+# Gerenciar Estoque
 ## Objetivo
 
 Este projeto é uma **API REST** para controle de estoque, desenvolvida em Java com o framework Spring Boot. O objetivo é fornecer endpoints para o gerenciamento completo de produtos, incluindo operações de cadastro, consulta, atualização e remoção.
@@ -34,11 +34,7 @@ Este projeto é uma **API REST** para controle de estoque, desenvolvida em Java 
 
 ## Configuração do Banco de Dados
 
-O banco de dados **MySQL** será iniciado automaticamente via Docker Compose, com as seguintes credenciais:
-
-- Banco: `estoque_db`
-- Usuário: `glee`
-- Senha: `12345`
+O banco de dados **MySQL** será iniciado automaticamente via Docker Compose.
 
 ## Observações
 
