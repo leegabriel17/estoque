@@ -24,10 +24,14 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public ProdutoResponse salvar(ProdutoRequest produtoRequest) {
+        log.info("Iniciando processo para salvar novo produto com nome: {}", produtoRequest.getNome());
         if (produtoRepository.existsByNomeIgnoreCase(produtoRequest.getNome())) {
+            log.warn("Tentativa de salvar produto com nome duplicado: {}", produtoRequest.getNome());
             throw new ProdutoDuplicadoException("Já existe um produto cadastrado com o nome: " + produtoRequest.getNome());
         }
-        return ProdutoConverter.toResponse(produtoRepository.save(ProdutoConverter.toEntity(produtoRequest)));
+        ProdutoEntity produtoSalvo = produtoRepository.save(ProdutoConverter.toEntity(produtoRequest));
+        log.info("Produto salvo com sucesso com ID: {}", produtoSalvo.getId());
+        return ProdutoConverter.toResponse(produtoSalvo);
     }
 
     public ProdutoResponse atualizar(Long id, ProdutoRequest produtoRequest) {
@@ -51,19 +55,26 @@ public class ProdutoService {
     }
 
     public void deletar(Long id) {
+        log.info("Iniciando processo para deletar produto com ID: {}", id);
         if (!produtoRepository.existsById(id)) {
+            log.warn("Tentativa de deletar produto não encontrado com ID: {}", id);
             throw new ProdutoNaoEncontradoException("Produto com ID " + id + " não encontrado para exclusão.");
         }
         produtoRepository.deleteById(id);
+        log.info("Produto com ID {} deletado com sucesso.", id);
     }
 
     public List<ProdutoResponse> listarTodos() {
-        return produtoRepository.findAll().stream()
+        log.info("Buscando todos os produtos no repositório.");
+        List<ProdutoResponse> produtos = produtoRepository.findAll().stream()
                 .map(ProdutoConverter::toResponse)
                 .toList();
+        log.info("Encontrados {} produtos.", produtos.size());
+        return produtos;
     }
 
     public ProdutoResponse buscarPorId(Long id) {
+        log.info("Buscando produto por ID: {}", id);
         return produtoRepository.findById(id)
                 .map(ProdutoConverter::toResponse)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto com ID " + id + " não encontrado."));
