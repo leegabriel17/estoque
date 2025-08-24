@@ -1,9 +1,9 @@
 package gerenciador.estoque.service;
 
 import gerenciador.estoque.converter.ProdutoConverter;
-import gerenciador.estoque.model.ProdutoEntity;
 import gerenciador.estoque.exception.ProdutoDuplicadoException;
 import gerenciador.estoque.exception.ProdutoNaoEncontradoException;
+import gerenciador.estoque.model.ProdutoEntity;
 import gerenciador.estoque.repository.ProdutoRepository;
 import gerenciador.estoque.request.ProdutoRequest;
 import gerenciador.estoque.response.ProdutoResponse;

@@ -17,7 +17,7 @@ public class OpenApiConfig {
                         .title("API de Gerenciamento de Estoque")
                         .version("v1")
                         .description("API REST para gerenciar produtos em um sistema de estoque.")
-                        .contact(new Contact().name("Lee").email("lucia.dev@email.com"))
+                        .contact(new Contact().name("Lee").email("lee.dev@email.com"))
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")));
     }
 }

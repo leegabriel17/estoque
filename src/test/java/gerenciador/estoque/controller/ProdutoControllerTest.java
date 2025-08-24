@@ -6,6 +6,7 @@ import gerenciador.estoque.exception.ProdutoNaoEncontradoException;
 import gerenciador.estoque.request.ProdutoRequest;
 import gerenciador.estoque.response.ProdutoResponse;
 import gerenciador.estoque.service.ProdutoServiceImpl;
+import gerenciador.estoque.service.ProdutoServiceInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ class ProdutoControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ProdutoServiceImpl produtoServiceImpl;
+    private ProdutoServiceInterface produtoServiceInterface;
 
     private ProdutoRequest produtoRequest;
     private ProdutoResponse produtoResponse;
@@ -47,7 +48,7 @@ class ProdutoControllerTest {
 
     @Test
     void deveSalvarProdutoERetornarStatus201() throws Exception {
-        when(produtoServiceImpl.salvar(any(ProdutoRequest.class))).thenReturn(produtoResponse);
+        when(produtoServiceInterface.salvar(any(ProdutoRequest.class))).thenReturn(produtoResponse);
 
         mockMvc.perform(post("/produtos")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -60,7 +61,7 @@ class ProdutoControllerTest {
 
     @Test
     void deveListarTodosOsProdutosERetornarStatus200() throws Exception {
-        when(produtoServiceImpl.listarTodos()).thenReturn(List.of(produtoResponse));
+        when(produtoServiceInterface.listarTodos()).thenReturn(List.of(produtoResponse));
 
         mockMvc.perform(get("/produtos"))
                 .andExpect(status().isOk())
@@ -69,7 +70,7 @@ class ProdutoControllerTest {
 
     @Test
     void deveBuscarProdutoPorIdERetornarStatus200() throws Exception {
-        when(produtoServiceImpl.buscarPorId(1L)).thenReturn(produtoResponse);
+        when(produtoServiceInterface.buscarPorId(1L)).thenReturn(produtoResponse);
 
         mockMvc.perform(get("/produtos/1"))
                 .andExpect(status().isOk())
@@ -78,7 +79,7 @@ class ProdutoControllerTest {
 
     @Test
     void deveRetornarStatus404AoBuscarProdutoInexistente() throws Exception {
-        when(produtoServiceImpl.buscarPorId(99L)).thenThrow(new ProdutoNaoEncontradoException("Produto não encontrado"));
+        when(produtoServiceInterface.buscarPorId(99L)).thenThrow(new ProdutoNaoEncontradoException("Produto não encontrado"));
 
         mockMvc.perform(get("/produtos/99"))
                 .andExpect(status().isNotFound());
@@ -97,7 +98,7 @@ class ProdutoControllerTest {
 
     @Test
     void deveRetornarStatus409AoSalvarProdutoDuplicado() throws Exception {
-        when(produtoServiceImpl.salvar(any(ProdutoRequest.class)))
+        when(produtoServiceInterface.salvar(any(ProdutoRequest.class)))
                 .thenThrow(new ProdutoDuplicadoException("Produto já existe"));
 
         mockMvc.perform(post("/produtos")
@@ -131,7 +132,7 @@ class ProdutoControllerTest {
 
     @Test
     void deveAtualizarProdutoERetornarStatus200() throws Exception {
-        when(produtoServiceImpl.atualizar(eq(1L), any(ProdutoRequest.class))).thenReturn(produtoResponse);
+        when(produtoServiceInterface.atualizar(eq(1L), any(ProdutoRequest.class))).thenReturn(produtoResponse);
 
         mockMvc.perform(put("/produtos/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +143,7 @@ class ProdutoControllerTest {
 
     @Test
     void deveDeletarProdutoERetornarStatus204() throws Exception {
-        doNothing().when(produtoServiceImpl).deletar(1L);
+        doNothing().when(produtoServiceInterface).deletar(1L);
 
         mockMvc.perform(delete("/produtos/1"))
                 .andExpect(status().isNoContent());
