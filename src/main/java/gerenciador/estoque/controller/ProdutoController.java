@@ -2,7 +2,7 @@ package gerenciador.estoque.controller;
 
 import gerenciador.estoque.request.ProdutoRequest;
 import gerenciador.estoque.response.ProdutoResponse;
-import gerenciador.estoque.service.ProdutoService;
+import gerenciador.estoque.service.ProdutoServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProdutoController {
 
-    private final ProdutoService produtoService;
+    private final ProdutoServiceImpl produtoServiceImpl;
 
     @Operation(summary = "Cria um novo produto", description = "Registra um novo produto no estoque e retorna os dados do produto criado.")
     @ApiResponses(value = {
@@ -35,7 +35,7 @@ public class ProdutoController {
     @PostMapping
     public ResponseEntity<ProdutoResponse> salvar(@RequestBody @Valid ProdutoRequest produtoRequest, UriComponentsBuilder uriBuilder) {
         log.info("Recebida requisição para criar novo produto: {}", produtoRequest.getNome());
-        ProdutoResponse produtoSalvo = produtoService.salvar(produtoRequest);
+        ProdutoResponse produtoSalvo = produtoServiceImpl.salvar(produtoRequest);
         URI uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoSalvo.getId()).toUri();
         return ResponseEntity.created(uri).body(produtoSalvo);
     }
@@ -49,7 +49,7 @@ public class ProdutoController {
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponse> atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoRequest produtoRequest) {
         log.info("Recebida requisição para atualizar produto com ID: {}", id);
-        ProdutoResponse produtoAtualizado = produtoService.atualizar(id, produtoRequest);
+        ProdutoResponse produtoAtualizado = produtoServiceImpl.atualizar(id, produtoRequest);
         return ResponseEntity.ok(produtoAtualizado);
     }
 
@@ -62,7 +62,7 @@ public class ProdutoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         log.info("Recebida requisição para deletar produto com ID: {}", id);
-        produtoService.deletar(id);
+        produtoServiceImpl.deletar(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -71,7 +71,7 @@ public class ProdutoController {
     @GetMapping
     public ResponseEntity<List<ProdutoResponse>> listarTodos() {
         log.info("Recebida requisição para listar todos os produtos.");
-        return ResponseEntity.ok(produtoService.listarTodos());
+        return ResponseEntity.ok(produtoServiceImpl.listarTodos());
     }
 
     @Operation(summary = "Busca um produto por ID", description = "Retorna os dados de um produto específico com base no seu ID.")
@@ -82,6 +82,6 @@ public class ProdutoController {
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponse> buscarPorId(@PathVariable Long id) {
         log.info("Recebida requisição para buscar produto por ID: {}", id);
-        return ResponseEntity.ok(produtoService.buscarPorId(id));
+        return ResponseEntity.ok(produtoServiceImpl.buscarPorId(id));
     }
 }

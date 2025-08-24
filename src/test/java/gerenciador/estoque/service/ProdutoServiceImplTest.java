@@ -22,13 +22,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ProdutoServiceTest {
+class ProdutoServiceImplTest {
 
     @Mock
     private ProdutoRepository produtoRepository;
 
     @InjectMocks
-    private ProdutoService produtoService;
+    private ProdutoServiceInterface produtoServiceInterface;
     private ProdutoEntity produtoEntity;
     private ProdutoRequest produtoRequest;
 
@@ -43,7 +43,7 @@ class ProdutoServiceTest {
         when(produtoRepository.existsByNomeIgnoreCase(anyString())).thenReturn(false);
         when(produtoRepository.save(any(ProdutoEntity.class))).thenReturn(produtoEntity);
 
-        ProdutoResponse response = produtoService.salvar(produtoRequest);
+        ProdutoResponse response = produtoServiceInterface.salvar(produtoRequest);
 
         assertNotNull(response);
         assertEquals("Teclado Mecânico", response.getNome());
@@ -55,7 +55,7 @@ class ProdutoServiceTest {
         when(produtoRepository.existsByNomeIgnoreCase(anyString())).thenReturn(true);
 
         assertThrows(ProdutoDuplicadoException.class, () -> {
-            produtoService.salvar(produtoRequest);
+            produtoServiceInterface.salvar(produtoRequest);
         });
 
         verify(produtoRepository, never()).save(any(ProdutoEntity.class));
@@ -66,7 +66,7 @@ class ProdutoServiceTest {
         when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoEntity));
         when(produtoRepository.save(any(ProdutoEntity.class))).thenReturn(produtoEntity);
 
-        ProdutoResponse response = produtoService.atualizar(1L, produtoRequest);
+        ProdutoResponse response = produtoServiceInterface.atualizar(1L, produtoRequest);
 
         assertNotNull(response);
         assertEquals(1L, response.getId());
@@ -82,7 +82,7 @@ class ProdutoServiceTest {
         when(produtoRepository.findByNomeIgnoreCase("Outro Produto")).thenReturn(Optional.of(outroProduto));
 
         assertThrows(ProdutoDuplicadoException.class, () -> {
-            produtoService.atualizar(1L, produtoRequest);
+            produtoServiceInterface.atualizar(1L, produtoRequest);
         });
     }
 
@@ -91,7 +91,7 @@ class ProdutoServiceTest {
         when(produtoRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ProdutoNaoEncontradoException.class, () -> {
-            produtoService.atualizar(1L, produtoRequest);
+            produtoServiceInterface.atualizar(1L, produtoRequest);
         });
 
         verify(produtoRepository, never()).save(any(ProdutoEntity.class));
@@ -102,7 +102,7 @@ class ProdutoServiceTest {
         when(produtoRepository.existsById(1L)).thenReturn(true);
         doNothing().when(produtoRepository).deleteById(1L);
 
-        produtoService.deletar(1L);
+        produtoServiceInterface.deletar(1L);
 
         verify(produtoRepository, times(1)).deleteById(1L);
     }
@@ -112,7 +112,7 @@ class ProdutoServiceTest {
         when(produtoRepository.existsById(1L)).thenReturn(false);
 
         assertThrows(ProdutoNaoEncontradoException.class, () -> {
-            produtoService.deletar(1L);
+            produtoServiceInterface.deletar(1L);
         });
 
         verify(produtoRepository, never()).deleteById(anyLong());
@@ -122,7 +122,7 @@ class ProdutoServiceTest {
     void deveListarTodosOsProdutos() {
         when(produtoRepository.findAll()).thenReturn(List.of(produtoEntity));
 
-        List<ProdutoResponse> responses = produtoService.listarTodos();
+        List<ProdutoResponse> responses = produtoServiceInterface.listarTodos();
 
         assertFalse(responses.isEmpty());
         assertEquals(1, responses.size());
@@ -133,7 +133,7 @@ class ProdutoServiceTest {
     void deveBuscarProdutoPorIdComSucesso() {
         when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoEntity));
 
-        ProdutoResponse response = produtoService.buscarPorId(1L);
+        ProdutoResponse response = produtoServiceInterface.buscarPorId(1L);
 
         assertNotNull(response);
         assertEquals(1L, response.getId());
@@ -145,7 +145,7 @@ class ProdutoServiceTest {
         when(produtoRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ProdutoNaoEncontradoException.class, () -> {
-            produtoService.buscarPorId(1L);
+            produtoServiceInterface.buscarPorId(1L);
         });
     }
 }
