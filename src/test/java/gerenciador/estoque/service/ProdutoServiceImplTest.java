@@ -28,9 +28,9 @@ class ProdutoServiceImplTest {
     private ProdutoRepository produtoRepository;
 
     @InjectMocks
-    private ProdutoServiceInterface produtoServiceInterface;
-    private ProdutoEntity produtoEntity;
-    private ProdutoRequest produtoRequest;
+    private ProdutoServiceImpl produtoServiceImpl;
+    private static ProdutoEntity produtoEntity;
+    private static ProdutoRequest produtoRequest;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +43,7 @@ class ProdutoServiceImplTest {
         when(produtoRepository.existsByNomeIgnoreCase(anyString())).thenReturn(false);
         when(produtoRepository.save(any(ProdutoEntity.class))).thenReturn(produtoEntity);
 
-        ProdutoResponse response = produtoServiceInterface.salvar(produtoRequest);
+        ProdutoResponse response = produtoServiceImpl.salvar(produtoRequest);
 
         assertNotNull(response);
         assertEquals("Teclado Mecânico", response.getNome());
@@ -55,7 +55,7 @@ class ProdutoServiceImplTest {
         when(produtoRepository.existsByNomeIgnoreCase(anyString())).thenReturn(true);
 
         assertThrows(ProdutoDuplicadoException.class, () -> {
-            produtoServiceInterface.salvar(produtoRequest);
+            produtoServiceImpl.salvar(produtoRequest);
         });
 
         verify(produtoRepository, never()).save(any(ProdutoEntity.class));
@@ -66,7 +66,7 @@ class ProdutoServiceImplTest {
         when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoEntity));
         when(produtoRepository.save(any(ProdutoEntity.class))).thenReturn(produtoEntity);
 
-        ProdutoResponse response = produtoServiceInterface.atualizar(1L, produtoRequest);
+        ProdutoResponse response = produtoServiceImpl.atualizar(1L, produtoRequest);
 
         assertNotNull(response);
         assertEquals(1L, response.getId());
@@ -82,7 +82,7 @@ class ProdutoServiceImplTest {
         when(produtoRepository.findByNomeIgnoreCase("Outro Produto")).thenReturn(Optional.of(outroProduto));
 
         assertThrows(ProdutoDuplicadoException.class, () -> {
-            produtoServiceInterface.atualizar(1L, produtoRequest);
+            produtoServiceImpl.atualizar(1L, produtoRequest);
         });
     }
 
@@ -91,7 +91,7 @@ class ProdutoServiceImplTest {
         when(produtoRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ProdutoNaoEncontradoException.class, () -> {
-            produtoServiceInterface.atualizar(1L, produtoRequest);
+            produtoServiceImpl.atualizar(1L, produtoRequest);
         });
 
         verify(produtoRepository, never()).save(any(ProdutoEntity.class));
@@ -102,7 +102,7 @@ class ProdutoServiceImplTest {
         when(produtoRepository.existsById(1L)).thenReturn(true);
         doNothing().when(produtoRepository).deleteById(1L);
 
-        produtoServiceInterface.deletar(1L);
+        produtoServiceImpl.deletar(1L);
 
         verify(produtoRepository, times(1)).deleteById(1L);
     }
@@ -112,7 +112,7 @@ class ProdutoServiceImplTest {
         when(produtoRepository.existsById(1L)).thenReturn(false);
 
         assertThrows(ProdutoNaoEncontradoException.class, () -> {
-            produtoServiceInterface.deletar(1L);
+            produtoServiceImpl.deletar(1L);
         });
 
         verify(produtoRepository, never()).deleteById(anyLong());
@@ -122,7 +122,7 @@ class ProdutoServiceImplTest {
     void deveListarTodosOsProdutos() {
         when(produtoRepository.findAll()).thenReturn(List.of(produtoEntity));
 
-        List<ProdutoResponse> responses = produtoServiceInterface.listarTodos();
+        List<ProdutoResponse> responses = produtoServiceImpl.listarTodos();
 
         assertFalse(responses.isEmpty());
         assertEquals(1, responses.size());
@@ -133,7 +133,7 @@ class ProdutoServiceImplTest {
     void deveBuscarProdutoPorIdComSucesso() {
         when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoEntity));
 
-        ProdutoResponse response = produtoServiceInterface.buscarPorId(1L);
+        ProdutoResponse response = produtoServiceImpl.buscarPorId(1L);
 
         assertNotNull(response);
         assertEquals(1L, response.getId());
@@ -145,7 +145,7 @@ class ProdutoServiceImplTest {
         when(produtoRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ProdutoNaoEncontradoException.class, () -> {
-            produtoServiceInterface.buscarPorId(1L);
+            produtoServiceImpl.buscarPorId(1L);
         });
     }
 }
